@@ -5,6 +5,6 @@ def calculate_shelf_life(temps: list[float]) -> dict:
     remaining = max(BASE_SHELF_LIFE - reduction, 0)
     percentage = (remaining / BASE_SHELF_LIFE) * 100
     return {
-        "remaining_hours": remaining,
+        "remaining_hours": round(remaining, 2),
         "percentage": round(percentage, 2)
     }
