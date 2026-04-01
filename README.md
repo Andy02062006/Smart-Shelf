@@ -2,7 +2,7 @@
 
 SmartShelf OS is a high-fidelity, AI-powered monitoring system designed for real-time tracking of temperature-sensitive industrial assets. It transforms raw telemetry into actionable strategic intelligence through a premium, glassmorphic "Command Center" interface.
 
-## 🚀 Key Features
+## Key Features
 
 - **Neural Intelligence Matrix**: AI-driven shelf-life predictions and tactical directives for mission-critical decision making.
 - **Deep-Space Design System**: A sophisticated dark-themed UI featuring high-end glassmorphism (`backdrop-blur`), neon signal logic, and tactile micro-interactions.
@@ -11,13 +11,13 @@ SmartShelf OS is a high-fidelity, AI-powered monitoring system designed for real
 - **Real-Time Telemetry**: Dynamic tracking of global asset coordinates, thermal sensor arrays, and system resilience via interactive Chart.js visualizations.
 - **Simulation Core**: Interactive thermal stress control panel to model environmental risk scenarios and system response.
 
-## 🛠️ Technical Architecture
+## Technical Architecture
 
 - **Frontend**: React (Vite), Chart.js, jspdf (CDN Integration), CSS3 (Glassmorphism & Advanced Shadows).
 - **Backend**: FastAPI (Python), MongoDB (Persistent Telemetry).
 - **Security**: Mock-Auth portal for secure operator initialization.
 
-## 🏁 Setup Instructions
+## Setup Instructions
 
 ### 1. Database Initialization
 Ensure MongoDB is running locally on the default port (`27017`).
@@ -39,5 +39,5 @@ npm run dev
 ### 4. Access
 Navigate to `http://localhost:5173` to initialize the SmartShelf OS Command Center.
 
-## 🛡️ License
+## License
 Proprietary Intellectual Property of the SmartShelf OS Development Team.
