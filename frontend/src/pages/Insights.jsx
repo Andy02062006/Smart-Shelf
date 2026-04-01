@@ -1,12 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
-const riskStyle = (risk) => {
-  if (risk === 'Green') return { color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)', border: 'rgba(16, 185, 129, 0.2)' }
-  if (risk === 'Yellow') return { color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)', border: 'rgba(245, 158, 11, 0.2)' }
-  return { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 0.2)' }
-}
-
 export default function Insights() {
   const [batches, setBatches] = useState([])
   const [loading, setLoading] = useState(true)
@@ -19,81 +13,90 @@ export default function Insights() {
         setBatches(data)
         setError(null)
       })
-      .catch(() => setError('Failed to connect to Monitoring Hub.'))
+      .catch(() => setError('Strategic network data could not be retrieved.'))
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <div style={{ textAlign: 'center', padding: '100px', color: '#94a3b8' }}>Aggregating system insights...</div>
+  if (loading) return <div style={{ textAlign: 'center', padding: '100px', color: 'rgba(255,255,255,0.4)', fontWeight: '800', textTransform: 'uppercase' }}>Synchronizing Intelligence Matrix...</div>
   
   const total = batches.length
   const safe = batches.filter(b => b.risk_level === 'Green').length
   const atRisk = batches.filter(b => b.risk_level !== 'Green').length
   const criticalBatches = batches.filter(b => b.risk_level === 'Red')
 
-  const systemRecommendations = [
-    { title: "Inventory Prioritization", detail: "Prioritize processing of all batches currently in 'Red' or 'Yellow' state to minimize spoilage loss." },
-    { title: "Transport Optimization", detail: "Investigate cooling consistency in 'Transport' storage types; multiple anomalies detected in mobile units." },
-    { title: "Infrastructure Audit", detail: "Perform maintenance on 'Cold Storage' units showing periodic temperature spikes (specifically Malfunctioning Freezer 4)." },
-    { title: "Safety Protocol", detail: "Ensure 'Red' batches are diverted to low-risk processing only after secondary manual inspection." }
+  const systemDirectives = [
+    { title: "INVENTORY PRIORITIZATION", detail: "Automated routing indicates immediate processing for Red/Yellow nodes to neutralize waste probability.", color: "#6366f1" },
+    { title: "INFRASTRUCTURE AUDIT", detail: "Malfunctioning Freezer 4 showing recurrent thermal spikes. Recommend immediate hardware diagnostics.", color: "#f59e0b" },
+    { title: "LOGISTICS RE-ROUTING", detail: "Mobile transport units B-7 and B-9 exhibit cooling degradation. Redirecting to nearest distribution hub.", color: "#6366f1" },
+    { title: "SAFETY PROTOCOL ALPHA", detail: "All critical deviations require secondary manual inspection before downstream asset integration.", color: "#8b5cf6" }
   ]
 
   return (
-    <div className="animate-in" style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '48px', textAlign: 'left' }}>
-        <h2 style={{ fontSize: '32px', fontWeight: '900', color: '#fff', marginBottom: '8px' }}>Operational Intelligence Hub</h2>
-        <p style={{ color: '#94a3b8', fontSize: '16px', fontWeight: '500' }}>System-wide predictive analysis and automated strategic guidance.</p>
-      </div>
-
-      {/* Summary Section */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', marginBottom: '48px' }}>
-        {[
-          { label: 'Network Nodes', value: total, color: '#fff', icon: '🌐' },
-          { label: 'Safe Operations', value: safe, color: '#10b981', icon: '🛡️' },
-          { label: 'At-Risk Units', value: atRisk, color: '#f59e0b', icon: '⚠️' }
-        ].map((stat, i) => (
-          <div key={i} className="glass-card" style={{ padding: '32px', borderRadius: '28px', borderLeft: `6px solid ${stat.color}` }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                <div style={{ fontSize: '11px', fontWeight: '900', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>{stat.label}</div>
-                <div style={{ fontSize: '20px' }}>{stat.icon}</div>
+    <div className="animate-in">
+      {/* High-Impact Insight Header */}
+      <div className="glass-card" style={{ 
+        padding: '64px', marginBottom: '48px', 
+        background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05))',
+        border: '1px solid rgba(99, 102, 241, 0.2)',
+        textAlign: 'center'
+      }}>
+        <div style={{ fontSize: '12px', fontWeight: '900', color: '#6366f1', textTransform: 'uppercase', letterSpacing: '0.3em', marginBottom: '24px' }}>Strategic Intelligence Matrix</div>
+        <h2 style={{ fontSize: '48px', fontWeight: '900', color: '#fff', marginBottom: '32px' }}>Operational Resilience: <span style={{ color: '#10b981' }}>{((safe/total)*100).toFixed(1)}%</span></h2>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px', maxWidth: '900px', margin: '0 auto' }}>
+            <div style={{ padding: '24px', background: 'rgba(255,255,255,0.03)', borderRadius: '20px' }}>
+                <div style={{ fontSize: '10px', fontWeight: '800', color: 'rgba(255,255,255,0.3)', marginBottom: '8px' }}>MAPPED ASSETS</div>
+                <div style={{ fontSize: '32px', fontWeight: '900', color: '#fff' }}>{total}</div>
             </div>
-            <div style={{ fontSize: '48px', fontWeight: '900', color: stat.color, fontFamily: 'Outfit', lineHeight: 1 }}>{stat.value}</div>
-          </div>
-        ))}
+            <div style={{ padding: '24px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '8px' }}>
+                    <div style={{ width: '6px', height: '6px', backgroundColor: '#10b981', borderRadius: '50%', boxShadow: '0 0 8px #10b981' }}></div>
+                    <div style={{ fontSize: '10px', fontWeight: '800', color: 'rgba(16, 185, 129, 0.6)' }}>SAFE</div>
+                </div>
+                <div style={{ fontSize: '32px', fontWeight: '900', color: '#10b981' }}>{safe}</div>
+            </div>
+            <div style={{ padding: '24px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '20px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '8px' }}>
+                    <div style={{ width: '6px', height: '6px', backgroundColor: '#ef4444', borderRadius: '50%', boxShadow: '0 0 8px #ef4444' }}></div>
+                    <div style={{ fontSize: '10px', fontWeight: '800', color: 'rgba(239, 68, 68, 0.6)' }}>CRITICAL</div>
+                </div>
+                <div style={{ fontSize: '32px', fontWeight: '900', color: '#ef4444' }}>{atRisk}</div>
+            </div>
+        </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
-        {/* Critical Alerts Component */}
-        <div className="glass-card" style={{ padding: '40px', borderRadius: '32px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
+        {/* Tactical Anomalies */}
+        <div className="glass-card" style={{ padding: '48px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontSize: '20px' }}>🚨</span>
-                <h3 style={{ margin: 0, fontSize: '20px', fontWeight: '800' }}>Live Anomalies</h3>
+                <div className="critical-pulse" style={{ width: '12px', height: '12px', backgroundColor: '#ef4444', borderRadius: '50%' }} />
+                <h3 style={{ margin: 0, fontSize: '20px', fontWeight: '800', color: '#fff', textTransform: 'uppercase' }}>Tactical Anomalies</h3>
             </div>
-            <div style={{ fontSize: '10px', color: '#64748b', fontWeight: '900', textTransform: 'uppercase' }}>Priority: High</div>
+            <div style={{ fontSize: '10px', color: '#ef4444', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Immediate Action</div>
           </div>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {criticalBatches.length === 0 ? (
-              <div style={{ padding: '40px', textAlign: 'center', backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div style={{ fontSize: '24px', marginBottom: '8px' }}>✅</div>
-                  <div style={{ color: '#64748b', fontSize: '13px', fontWeight: '600' }}>No critical node failures detected.</div>
+              <div style={{ padding: '40px', textAlign: 'center', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.1)' }}>
+                  <div style={{ color: '#10b981', fontWeight: '800', fontSize: '14px', textTransform: 'uppercase' }}>Zero Node Failures Detected</div>
               </div>
             ) : (
               criticalBatches.map(b => (
                 <Link to={`/batch/${b.batch_id}`} key={b.batch_id} style={{ textDecoration: 'none' }}>
                   <div className="glass-card" style={{ 
-                    padding: '20px', backgroundColor: 'rgba(239, 68, 68, 0.03)', 
-                    border: '1px solid rgba(239, 68, 68, 0.08)', borderRadius: '18px',
-                    borderLeft: '4px solid #ef4444'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.08)'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.03)'}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                        <div style={{ fontWeight: '900', color: '#ef4444', fontSize: '15px' }}>{b.batch_id}</div>
-                        <div style={{ fontSize: '11px', color: '#64748b', fontWeight: '700' }}>{b.avg_temperature}°C</div>
+                    padding: '24px', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.1)',
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div style={{ width: '6px', height: '6px', backgroundColor: '#ef4444', borderRadius: '50%' }} />
+                            <div style={{ fontWeight: '900', color: '#ef4444', fontSize: '14px' }}>NODE_{b.batch_id}</div>
+                        </div>
+                        <div style={{ fontSize: '14px', color: '#fff', fontWeight: '800' }}>{b.avg_temperature}°C</div>
                     </div>
-                    <div style={{ fontSize: '13px', color: '#94a3b8', lineHeight: '1.5', fontWeight: '500' }}>{b.insight.split('.')[0]}.</div>
+                    <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.6', fontStyle: 'italic' }}>
+                        "{b.insight.split(/\. (?=[A-Z])/)[0]}..."
+                    </div>
                   </div>
                 </Link>
               ))
@@ -101,24 +104,21 @@ export default function Insights() {
           </div>
         </div>
 
-        {/* Strategic Recommendations Component */}
-        <div className="glass-card" style={{ padding: '40px', borderRadius: '32px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontSize: '20px' }}>💡</span>
-                <h3 style={{ margin: 0, fontSize: '20px', fontWeight: '800' }}>System Directives</h3>
-            </div>
-            <div style={{ fontSize: '10px', color: '#64748b', fontWeight: '900', textTransform: 'uppercase' }}>Source: AI Analysis</div>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {systemRecommendations.map((rec, i) => (
-              <div key={i} style={{ paddingLeft: '16px', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
-                <div style={{ color: '#fff', fontWeight: '700', fontSize: '15px', marginBottom: '6px' }}>{rec.title}</div>
-                <div style={{ color: '#64748b', fontSize: '13px', lineHeight: '1.6', fontWeight: '500' }}>{rec.detail}</div>
+        {/* Strategic Directives */}
+        <div className="glass-card" style={{ padding: '48px' }}>
+          <h3 style={{ margin: "0 0 40px 0", fontSize: '20px', fontWeight: '800', color: '#fff', textTransform: 'uppercase' }}>Strategic Directives</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            {systemDirectives.map((rec, i) => (
+              <div key={i} style={{ display: 'flex', gap: '20px' }}>
+                <div style={{ width: '4px', height: 'auto', backgroundColor: rec.color, borderRadius: '2px' }}></div>
+                <div>
+                    <div style={{ color: '#fff', fontWeight: '900', fontSize: '15px', marginBottom: '6px', textTransform: 'uppercase' }}>{rec.title}</div>
+                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px', lineHeight: '1.6' }}>{rec.detail}</div>
+                </div>
               </div>
             ))}
           </div>
+          <button className="btn-futuristic" style={{ width: '100%', marginTop: '48px', height: '56px' }}>DEPLOY NETWORK UPDATE</button>
         </div>
       </div>
     </div>

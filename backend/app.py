@@ -126,11 +126,11 @@ def process_batch(batch):
     
     usage_guidance = ""
     if risk_level == "Green":
-        usage_guidance = "\n\nBased on its storage condition, the best use is:\n* Regular production use\n* Standard packaging and distribution"
+        usage_guidance = "\n\nBased on its storage condition, the best use is:\n• Regular production use\n• Standard packaging and distribution"
     elif risk_level == "Yellow":
-        usage_guidance = "\n\nBased on its storage condition, the best use is:\n* Prioritize for immediate processing\n* Use for short shelf-life products (e.g., curd, paneer)"
+        usage_guidance = "\n\nBased on its storage condition, the best use is:\n• Prioritize for immediate processing\n• Use for short shelf-life products (e.g., curd, paneer)"
     else: # Red
-        usage_guidance = "\n\nBased on its storage condition, the best use is:\n* Immediate processing if safe\n* Divert to low-risk products\n* Otherwise discard to avoid safety risks"
+        usage_guidance = "\n\nBased on its storage condition, the best use is:\n• Immediate processing if safe\n• Divert to low-risk products\n• Otherwise discard to avoid safety risks"
 
     return {
         "batch_id": batch_id,

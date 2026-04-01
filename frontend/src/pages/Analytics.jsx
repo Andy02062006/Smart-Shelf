@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { Bar } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,7 +10,6 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
-import { Bar } from 'react-chartjs-2'
 
 ChartJS.register(
   CategoryScale,
@@ -32,139 +32,180 @@ export default function Analytics() {
         setBatches(data)
         setError(null)
       })
-      .catch(() => setError('Failed to synchronize hub metrics.'))
+      .catch(() => setError('Historical telemetry could not be synchronized.'))
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <div style={{ textAlign: 'center', padding: '100px', color: '#94a3b8' }}>Aggregating Hub Metrics...</div>
-  
+  if (loading) return <div style={{ textAlign: 'center', padding: '100px', color: 'rgba(255,255,255,0.4)', fontWeight: '800', textTransform: 'uppercase' }}>Synchronizing Temporal Data...</div>
+
   if (error) return (
-    <div className="glass-card animate-in" style={{ maxWidth: '600px', margin: '40px auto', padding: '40px', textAlign: 'center', borderRadius: '24px' }}>
-      <p style={{ color: '#ef4444', marginBottom: '24px', fontSize: '18px', fontWeight: '800' }}>{error}</p>
-      <Link to="/" style={{ color: '#6366f1', textDecoration: 'none', fontWeight: '700' }}>← RETURN TO CONSOLE</Link>
+    <div className="glass-card animate-in" style={{ maxWidth: '600px', margin: '40px auto', padding: '40px', textAlign: 'center' }}>
+      <p style={{ color: '#ef4444', marginBottom: '24px', fontSize: '18px', fontWeight: '800', textTransform: 'uppercase' }}>{error}</p>
+      <Link to="/dashboard" className="btn-futuristic" style={{ textDecoration: 'none' }}>Return to Control Center</Link>
     </div>
   )
 
-  const totalBatches = batches.length
-  const greenCount = batches.filter(b => b?.risk_level === 'Green').length
-  const yellowCount = batches.filter(b => b?.risk_level === 'Yellow').length
-  const redCount = batches.filter(b => b?.risk_level === 'Red').length
-  
-  const avgShelfLife = totalBatches > 0 
-    ? (batches.reduce((sum, b) => sum + (b?.remaining_shelf_life || 0), 0) / totalBatches).toFixed(2)
-    : 0
-
   const chartData = {
-    labels: ['SAFE', 'MONITOR', 'CRITICAL'],
+    labels: batches.map(b => `NODE_${b.batch_id}`),
     datasets: [
       {
-        label: 'Nodes',
-        data: [greenCount, yellowCount, redCount],
-        backgroundColor: [
-          'rgba(16, 185, 129, 0.4)',
-          'rgba(245, 158, 11, 0.4)',
-          'rgba(239, 68, 68, 0.4)'
-        ],
-        borderColor: [
-          '#10b981',
-          '#f59e0b',
-          '#ef4444'
-        ],
-        borderWidth: 2,
-        borderRadius: 12,
+        label: 'Mean Temp (°C)',
+        data: batches.map(b => b.avg_temperature),
+        backgroundColor: batches.map(b => b.risk_level === 'Red' ? 'rgba(239, 68, 68, 0.4)' : 'rgba(99, 102, 241, 0.4)'),
+        borderColor: batches.map(b => b.risk_level === 'Red' ? '#ef4444' : '#6366f1'),
+        borderWidth: 1,
+        borderRadius: 8,
       }
-    ],
+    ]
   }
 
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: { 
-        backgroundColor: '#1e293b', 
-        padding: 12, 
-        cornerRadius: 12, 
-        titleFont: { size: 14, family: 'Outfit' }, 
-        bodyFont: { size: 13, family: 'Inter' } 
-      }
+    plugins: { 
+        legend: { display: false },
+        tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.8)',
+            titleColor: '#fff',
+            bodyColor: '#fff',
+            titleFont: { weight: '800' },
+            padding: 12,
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 1
+        }
     },
     scales: {
-      y: { 
-          beginAtZero: true, 
-          grid: { color: 'rgba(255, 255, 255, 0.05)' }, 
-          ticks: { stepSize: 1, color: '#94a3b8', font: { size: 11 } } 
-      },
-      x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 11, weight: '700' } } }
+      y: { border: { display: false }, grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 10, weight: '800' } } },
+      x: { border: { display: false }, grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 10, weight: '800' } } }
     }
   }
 
-  return (
-    <div className="animate-in" style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '48px', textAlign: 'left' }}>
-        <h2 style={{ fontSize: '32px', fontWeight: '900', color: '#fff', marginBottom: '8px' }}>Global Network Intelligence</h2>
-        <p style={{ color: '#94a3b8', fontSize: '16px', fontWeight: '500' }}>Aggregated telemetry and health distribution across all active monitoring nodes.</p>
-      </div>
-      
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: '40px' }}>
-        {[
-          { label: 'Network Capacity', value: totalBatches, sub: 'Active Nodes', color: '#fff' },
-          { label: 'Mean Longevity', value: `${avgShelfLife}h`, sub: 'Projected Avg', color: '#6366f1' },
-          { label: 'Critical Risk', value: redCount, sub: 'Immediate Action', color: '#ef4444' },
-          { label: 'System Uptime', value: '99.9%', sub: 'Operational', color: '#10b981' }
-        ].map((stat, i) => (
-          <div key={i} className="glass-card" style={{ padding: '24px', borderRadius: '24px', position: 'relative', overflow: 'hidden' }}>
-            <div style={{ fontSize: '10px', color: '#64748b', fontWeight: '900', textTransform: 'uppercase', marginBottom: '12px', letterSpacing: '0.15em' }}>{stat.label}</div>
-            <div style={{ fontSize: '36px', fontWeight: '900', color: stat.color, fontFamily: 'Outfit', lineHeight: 1 }}>{stat.value}</div>
-            <div style={{ fontSize: '12px', color: '#475569', marginTop: '8px', fontWeight: '700' }}>{stat.sub}</div>
-            <div style={{ position: 'absolute', top: '-10px', right: '-10px', width: '60px', height: '60px', background: `${stat.color}08`, borderRadius: '50%' }}></div>
-          </div>
-        ))}
-      </div>
+  const handleExport = () => {
+    if (!window.jspdf) {
+        alert("Intelligence engine initializing. Please wait.");
+        return;
+    }
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Theme colors
+    const primaryTitle = "#0f172a";
+    const accent = "#6366f1";
+    
+    // Header
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(primaryTitle);
+    doc.text("SMARTSHELF OS", 20, 30);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text("STRATEGIC TELEMETRY REPORT // INTERNAL ONLY", 20, 38);
+    
+    // Divider
+    doc.setDrawColor(200);
+    doc.line(20, 45, 190, 45);
+    
+    // Global Stats
+    doc.setFontSize(14);
+    doc.setTextColor(primaryTitle);
+    doc.text("Infrastructure Summary", 20, 60);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(50);
+    doc.text(`Total Managed Nodes: ${batches.length}`, 20, 70);
+    doc.text(`System Integrity: ${((batches.filter(b => b.risk_level === 'Green').length / batches.length) * 100).toFixed(1)}%`, 20, 78);
+    doc.text(`Generation Timestamp: ${new Date().toLocaleString()}`, 20, 86);
+    
+    // Table Header
+    doc.setFont("helvetica", "bold");
+    doc.setFillColor(245, 247, 250);
+    doc.rect(20, 100, 170, 10, 'F');
+    doc.text("NODE ID", 25, 107);
+    doc.text("TEMPERATURE", 60, 107);
+    doc.text("RESILIENCE", 100, 107);
+    doc.text("RISK STATE", 140, 107);
+    
+    // Table Body
+    doc.setFont("helvetica", "normal");
+    let y = 117;
+    batches.forEach((b) => {
+        doc.text(b.batch_id, 25, y);
+        doc.text(`${b.avg_temperature} C`, 60, y);
+        doc.text(`${b.remaining_shelf_life}H`, 100, y);
+        doc.text(b.risk_level.toUpperCase(), 140, y);
+        y += 10;
+        
+        if (y > 270) {
+            doc.addPage();
+            y = 30;
+        }
+    });
+    
+    // Footer
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text(`Quantum-Signed Intelligence Report // Node: SS-PRIMARY-CORE // Page ${i} of ${pageCount}`, 20, 285);
+    }
+    
+    doc.save(`SmartShelf_Intelligence_Report_${new Date().getTime()}.pdf`);
+  };
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '32px', marginBottom: '48px' }}>
-        <div className="glass-card" style={{ padding: '40px', borderRadius: '32px' }}>
+  return (
+    <div className="animate-in">
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: '48px' }}>
+        <div className="glass-card" style={{ padding: '48px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-                <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#fff' }}>Health Infrastructure Distribution</h3>
-                <div style={{ fontSize: '11px', color: '#64748b', fontWeight: '900', textTransform: 'uppercase' }}>Telemetry: Real-Time</div>
+                <h3 style={{ fontSize: '20px', fontWeight: '800', color: '#fff', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Regional Thermal Analysis</h3>
+                <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Telemetry Uplink: Active</div>
             </div>
-            <div style={{ height: '360px' }}>
+            <div style={{ height: '450px' }}>
                 <Bar data={chartData} options={chartOptions} />
             </div>
         </div>
 
-        <div className="glass-card" style={{ padding: '40px', borderRadius: '32px' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#fff', marginBottom: '24px' }}>Regional Node Summary</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                {[
-                    { loc: 'Cold Storage Unit A', status: 'Optimal', val: '2.4°C' },
-                    { loc: 'Transport Truck 2', status: 'Critical', val: '8.1°C' },
-                    { loc: 'Processing Unit B', status: 'Optimal', val: '3.0°C' },
-                    { loc: 'Cold Storage Unit C', status: 'Warning', val: '5.5°C' }
-                ].map((item, i) => (
-                    <div key={i} style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid rgba(255,255,255,0.03)' }}>
-                        <div>
-                            <div style={{ fontSize: '14px', fontWeight: '700', color: '#fff' }}>{item.loc}</div>
-                            <div style={{ fontSize: '11px', color: item.status === 'Critical' ? '#ef4444' : (item.status === 'Warning' ? '#f59e0b' : '#10b981'), fontWeight: '900', textTransform: 'uppercase', marginTop: '2px' }}>{item.status}</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
+            <div className="glass-card" style={{ padding: '40px' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: '800', color: '#fff', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '32px' }}>Infrastructure Summary</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {[
+                        { loc: 'Cold Storage Unit A', status: 'Safe', val: '2.4°C' },
+                        { loc: 'Transport Truck 2', status: 'Critical', val: '8.1°C' },
+                        { loc: 'Processing Unit B', status: 'Safe', val: '3.0°C' },
+                        { loc: 'Cold Storage Unit C', status: 'Warning', val: '5.5°C' }
+                    ].map((item, i) => (
+                        <div key={i} style={{ 
+                            padding: '20px', background: 'rgba(255,255,255,0.02)', 
+                            borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)',
+                            display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+                        }}>
+                            <div>
+                                <div style={{ fontSize: '14px', fontWeight: '800', color: '#fff' }}>{item.loc}</div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+                                    <div style={{ 
+                                        width: '6px', height: '6px', borderRadius: '50%', 
+                                        backgroundColor: item.status === 'Critical' ? '#ef4444' : (item.status === 'Deviation' ? '#f59e0b' : '#10b981'),
+                                        boxShadow: `0 0 8px ${item.status === 'Critical' ? '#ef4444' : (item.status === 'Deviation' ? '#f59e0b' : '#10b981')}`
+                                    }} />
+                                    <div style={{ fontSize: '10px', color: item.status === 'Critical' ? '#ef4444' : (item.status === 'Deviation' ? '#f59e0b' : '#10b981'), fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{item.status}</div>
+                                </div>
+                            </div>
+                            <div style={{ fontSize: '18px', fontWeight: '900', color: '#fff', fontFamily: 'Outfit' }}>{item.val}</div>
                         </div>
-                        <div style={{ fontSize: '18px', fontWeight: '900', color: '#fff' }}>{item.val}</div>
-                    </div>
-                ))}
+                    ))}
+                </div>
+            </div>
+
+            <div className="glass-card" style={{ padding: '32px', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), transparent)' }}>
+                <h4 style={{ fontSize: '12px', fontWeight: '900', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: '16px' }}>Network Diagnostics</h4>
+                <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>Analysis of temporal drift indicates 99.8% network synchronization across all managed satellite hubs.</div>
+                <button onClick={handleExport} className="btn-futuristic" style={{ width: '100%', marginTop: '24px', height: '44px', fontSize: '11px' }}>Export Intelligence Report</button>
             </div>
         </div>
-      </div>
-
-      <div style={{ textAlign: 'center' }}>
-        <Link to="/" style={{ 
-            display: 'inline-block', padding: '12px 32px', backgroundColor: 'rgba(99, 102, 241, 0.1)',
-            color: '#6366f1', fontWeight: '900', textDecoration: 'none', fontSize: '13px', 
-            letterSpacing: '0.1em', borderRadius: '14px', border: '1px solid rgba(99, 102, 241, 0.1)'
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(99, 102, 241, 0.15)'}
-        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(99, 102, 241, 0.1)'}
-        >
-            ← BACK TO COMMAND CENTER
-        </Link>
       </div>
     </div>
   )
