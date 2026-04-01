@@ -1,10 +1,10 @@
-# SmartShelf OS: Futuristic AI Industrial Dashboard
+# SmartShelf OS: Futuristic Industrial Dashboard
 
-SmartShelf OS is a high-fidelity, AI-powered monitoring system designed for real-time tracking of temperature-sensitive industrial assets. It transforms raw telemetry into actionable strategic intelligence through a premium, glassmorphic "Command Center" interface.
+SmartShelf OS is a high-fidelity monitoring system designed for real-time tracking of temperature-sensitive industrial assets. It transforms raw telemetry into actionable strategic intelligence through a premium, glassmorphic "Command Center" interface.
 
 ## Key Features
 
-- **Neural Intelligence Matrix**: AI-driven shelf-life predictions and tactical directives for mission-critical decision making.
+- **Neural Intelligence Matrix**: Driven shelf-life predictions and tactical directives for mission-critical decision making.
 - **Deep-Space Design System**: A sophisticated dark-themed UI featuring high-end glassmorphism (`backdrop-blur`), neon signal logic, and tactile micro-interactions.
 - **Mission-Critical Alerts**: Visual emerald (Safe), amber (Warning), and crimson (Critical Pulse) status matrix for immediate anomaly detection.
 - **Strategic Reporting**: Integrated `jspdf` engine for professional-grade PDF telemetry export and offline intelligence audits.

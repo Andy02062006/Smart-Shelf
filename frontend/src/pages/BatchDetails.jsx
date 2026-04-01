@@ -54,7 +54,7 @@ export default function BatchDetails() {
             </div>
         </div>
 
-        {/* DECISION PANEL - AI INSIGHT AT TOP */}
+        {/* DECISION PANEL - INSIGHT AT TOP */}
         <div className="glass-card" style={{ 
             padding: '48px', 
             marginBottom: '48px', 
@@ -71,7 +71,7 @@ export default function BatchDetails() {
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
                 <div style={{ width: '2px', height: '20px', backgroundColor: s.color }}></div>
-                <h4 style={{ fontSize: '13px', fontWeight: '800', color: s.color, textTransform: 'uppercase', letterSpacing: '0.05em' }}>AI Insight</h4>
+                <h4 style={{ fontSize: '13px', fontWeight: '800', color: s.color, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Insight</h4>
             </div>
 
             <div style={{ fontSize: '28px', color: '#fff', fontWeight: '600', lineHeight: 1.4, maxWidth: '900px', whiteSpace: 'pre-wrap' }}>

@@ -188,7 +188,7 @@ export default function Dashboard() {
                     border: '1px solid rgba(255,255,255,0.05)',
                     borderRadius: '16px'
                 }}>
-                    <div style={{ fontSize: '11px', fontWeight: '900', color: statusTheme(selectedBatch.risk_level).color, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '12px' }}>AI Insight Directive</div>
+                    <div style={{ fontSize: '11px', fontWeight: '900', color: statusTheme(selectedBatch.risk_level).color, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '12px' }}>Insight Directive</div>
                     <div style={{ fontSize: '15px', color: 'rgba(255,255,255,0.8)', fontWeight: '500', lineHeight: 1.6, fontStyle: 'italic', whiteSpace: 'pre-wrap' }}>"{selectedBatch.insight}"</div>
                 </div>
             </div>
