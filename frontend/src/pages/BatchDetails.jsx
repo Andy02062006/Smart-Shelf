@@ -14,7 +14,7 @@ export default function BatchDetails() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8001/api/batches/${id}`)
+    fetch(`/api/batches/${id}`)
       .then(res => res.json())
       .then(data => {
         setBatch(data)

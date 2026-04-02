@@ -37,7 +37,7 @@ export default function Dashboard() {
   const [search, setSearch] = useState('')
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8001/api/batches?sim_temp=${simTemp}`)
+    fetch(`/api/batches?sim_temp=${simTemp}`)
       .then(res => res.json())
       .then(data => {
         setBatches(data)

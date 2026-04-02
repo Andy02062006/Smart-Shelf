@@ -153,6 +153,7 @@ def root():
 
 def simulate_data_updates():
     batches = list(batches_collection.find())
+        
     now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     
     for batch in batches:
@@ -191,6 +192,7 @@ def get_all_batches():
 @app.get("/api/batches/{batch_id}")
 def get_batch(batch_id: str):
     batch = batches_collection.find_one({"batch_id": batch_id})
+        
     if not batch:
         raise HTTPException(status_code=404, detail="Batch not found")
     return process_batch(batch)
